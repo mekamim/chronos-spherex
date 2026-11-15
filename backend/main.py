@@ -34,10 +34,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
 
 app = FastAPI(
-    title="SPHEREx Chrono-Spectral Sky Explorer (Planet X Edition)",
+    title="CHRONOS // SPHEREx — Spatial Infrared Observatory",
     description=(
         "Interactive Multi-Epoch Near-Infrared Sky Blinker, Difference Imager, and "
-        "102-Band Spectrophotometer for NASA SPHEREx (0.75-5.0 µm)."
+        "102-Band Spectrophotometer for NASA SPHEREx (0.75-5.0 µm) — https://chronosspherex.earth"
     ),
     version="2.0.0",
 )

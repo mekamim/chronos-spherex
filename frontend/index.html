@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SPHEREx // CHRONOS — Spatial Infrared Observatory</title>
+  <title>CHRONOS // SPHEREx — Spatial Infrared Observatory</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
       <!-- Brand Pill -->
       <div class="brand-pill">
         <span class="live-pulse"></span>
-        <span class="brand-name">SPHEREx</span>
+        <span class="brand-name">CHRONOS // SPHEREx</span>
         <span id="irsaLiveStatusBadge" class="brand-tag">364 IRSA Frames</span>
       </div>
 
@@ -401,7 +401,7 @@
       </div>
 
       <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.6;margin-bottom:18px;">
-        <strong>SPHEREx // CHRONOS</strong> is an interactive time-domain infrared discovery platform built on live
+        <strong>CHRONOS // SPHEREx</strong> (<a href="https://chronosspherex.earth" target="_blank" rel="noopener" style="color:var(--accent-cyan);text-decoration:none;">chronosspherex.earth</a>) is an interactive time-domain infrared discovery platform built on live
         <strong>NASA/IPAC IRSA SIAv2</strong> open data (<code style="color:var(--accent-cyan);">spherex_dr1</code> &amp; <code style="color:var(--accent-cyan);">spherex_qr3</code>).
         It combines multi-epoch astrometric blinking, split-curtain comparison, dipole difference imaging, and on-the-fly 102-channel spectroscopy (0.75–5.00 μm).
       </p>
@@ -425,6 +425,9 @@
             All sky coordinates, observation timestamps (<code style="color:var(--accent-cyan);">MJD</code>), spacecraft WCS footprints, and native detector cutouts (<code style="color:var(--accent-cyan);">RAW_FITS</code>) are fetched from official <strong>NASA/IPAC IRSA</strong> (SIAv2, IBE, and Gator <code style="color:var(--accent-cyan);">gaia_dr3_source</code> + <code style="color:var(--accent-cyan);">allwise_p3as_psd</code>) archives. Because individual SPHEREx Level-2 frames sample a single LVF strip per pass, <code style="color:var(--accent-cyan);">MODEL_CUBE</code> reconstructs continuous 6-band + 102-channel spectrophotometry anchored to cataloged 2MASS/WISE flux densities (<code style="color:var(--accent-cyan);">mJy</code>); switch to <code style="color:var(--accent-cyan);">RAW_FITS</code> anytime to inspect un-modeled North-Up WCS NASA detector cutouts.
           </p>
         </div>
+      </div>
+      <div style="margin-top:12px;font-family:var(--font-mono);font-size:10.5px;color:var(--text-tertiary);text-align:center;">
+        chronosspherex.earth · Independent open-science project created for NASA Space Apps Challenge 2026; not an official NASA website.
       </div>
     </div>
   </div>

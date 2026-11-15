@@ -1,5 +1,6 @@
-# SPHEREx Chrono-Spectral Sky Explorer (Planet X Edition)
+# CHRONOS // SPHEREx
 
+**Live Observatory:** [https://chronosspherex.earth](https://chronosspherex.earth)  
 **NASA Space Apps Challenge 2026 — Challenge: "Planet X and SPHEREx"**
 
 An interactive, public-facing astronomical discovery and time-domain spectrophotometry web application for NASA's **SPHEREx** (*Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer*) mission.
@@ -63,14 +64,21 @@ Open `http://localhost:8000` in your browser.
 
 ---
 
-## Cloud Deployment (Docker / Google Cloud Run)
+## Cloud Deployment (`chronosspherex.earth` via Google Cloud Run)
 
 ```bash
+# 1. Deploy directly from source to Google Cloud Run
 gcloud run deploy chronos-spherex \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
   --memory 1Gi
+
+# 2. Map custom domain (chronosspherex.earth)
+gcloud beta run domain-mappings create \
+  --service chronos-spherex \
+  --domain chronosspherex.earth \
+  --region us-central1
 ```
 
 ---

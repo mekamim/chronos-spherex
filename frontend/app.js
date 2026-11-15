@@ -1,5 +1,5 @@
 /**
- * SPHEREx // CHRONOS — Observatory Viewport & Spectral Analysis Client
+ * CHRONOS // SPHEREx — Observatory Viewport & Spectral Analysis Client (chronosspherex.earth)
  */
 
 const state = {
