@@ -1,0 +1,954 @@
+/*
+ * SPHEREx // CHRONOS — Observatory UI Stylesheet
+ */
+
+:root {
+  --bg-cosmos: #040508;
+  --glass-bg: rgba(14, 16, 24, 0.62);
+  --glass-bg-heavy: rgba(12, 14, 21, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-highlight: rgba(255, 255, 255, 0.22);
+
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(248, 250, 252, 0.64);
+  --text-tertiary: rgba(248, 250, 252, 0.38);
+
+  --accent-gold: #f5b041;
+  --accent-cyan: #38efdf;
+  --accent-coral: #ff5e4d;
+  --accent-emerald: #34d399;
+
+  --aura-color: rgba(56, 189, 248, 0.16);
+
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-cosmos);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* Ambient Cosmic Backdrop & Wavelength Aura */
+
+.cosmos-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 36px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Subtle animated ambient wavelength glow behind the telescope portal */
+.ambient-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 680px;
+  height: 680px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--aura-color) 0%, rgba(15, 23, 42, 0.04) 55%, transparent 72%);
+  filter: blur(45px);
+  pointer-events: none;
+  transition: background 0.85s var(--ease-spring), transform 0.85s var(--ease-spring);
+  z-index: 0;
+}
+
+/* Top Navigation Bar */
+
+.top-nav-wrap {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 12px var(--accent-cyan);
+  animation: breathe 2.6s infinite ease-in-out;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.brand-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding-left: 10px;
+  border-left: 1px solid var(--glass-border);
+}
+
+/* Center Universal Coordinate & FOV Scanner Bar */
+.universal-coord-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 14px;
+  background: var(--glass-bg-heavy);
+  border: 1px solid var(--glass-border-highlight);
+  border-radius: 999px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring);
+}
+
+.universal-coord-bar:focus-within {
+  border-color: rgba(56, 239, 223, 0.55);
+  box-shadow: 0 14px 42px rgba(56, 239, 223, 0.14);
+}
+
+.coord-field-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coord-field-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.coord-field-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  width: 112px;
+}
+
+.coord-field-input.wide {
+  width: 145px;
+}
+
+.coord-field-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.bar-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--glass-border);
+  margin: 0 4px;
+}
+
+.fov-pill-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-scan-sky {
+  appearance: none;
+  border: none;
+  background: var(--text-primary);
+  color: #040508;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s var(--ease-spring);
+  white-space: nowrap;
+}
+
+.btn-scan-sky:hover {
+  background: var(--accent-cyan);
+  transform: scale(1.03);
+}
+
+.btn-presets-trigger {
+  appearance: none;
+  border: 1px solid rgba(245, 176, 65, 0.35);
+  background: rgba(245, 176, 65, 0.10);
+  color: #fcd34d;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.22s var(--ease-spring);
+  white-space: nowrap;
+}
+
+.btn-presets-trigger:hover {
+  background: rgba(245, 176, 65, 0.20);
+  border-color: var(--accent-gold);
+}
+
+/* NASA Presets & Quick Coordinates Dropdown Menu */
+.presets-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 540px;
+  background: var(--glass-bg-heavy);
+  border: 1px solid var(--glass-border-highlight);
+  border-radius: 20px;
+  padding: 16px;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.85);
+  z-index: 60;
+  transition: opacity 0.24s var(--ease-spring), transform 0.24s var(--ease-spring);
+}
+
+.presets-dropdown.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-8px) scale(0.97);
+}
+
+.preset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.preset-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--glass-border);
+}
+
+.preset-item.active {
+  background: rgba(56, 239, 223, 0.10);
+  border-color: rgba(56, 239, 223, 0.35);
+}
+
+/* Right Minimal Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.glass-btn {
+  appearance: none;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.25s var(--ease-spring);
+}
+
+.glass-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-highlight);
+  transform: translateY(-1px);
+}
+
+.glass-btn.highlight {
+  border-color: rgba(245, 176, 65, 0.4);
+  color: #fcd34d;
+  background: rgba(245, 176, 65, 0.10);
+}
+
+.kbd-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-tertiary);
+}
+
+/* Main 3-Column Observatory Layout */
+
+.center-experience {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 330px 1fr 390px;
+  align-items: center;
+  gap: 28px;
+  min-height: 0;
+}
+
+@media (max-width: 1260px) {
+  html, body { overflow: auto; }
+  .cosmos-stage { height: auto; min-height: 100vh; gap: 24px; }
+  .center-experience { grid-template-columns: 1fr; justify-items: center; }
+}
+
+/* LEFT: Minimalist Editorial Story Panel */
+.editorial-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeSlideUp 0.65s var(--ease-spring);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.eyebrow-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.editorial-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.editorial-subtitle {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Minimalist 3-Stat Telemetry Strip */
+.minimal-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Magic Discovery Button */
+.btn-magic-reveal {
+  align-self: flex-start;
+  appearance: none;
+  border: 1px solid rgba(56, 239, 223, 0.45);
+  background: linear-gradient(135deg, rgba(56, 239, 223, 0.18), rgba(56, 189, 248, 0.06));
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 28px rgba(56, 239, 223, 0.15);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.btn-magic-reveal:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 34px rgba(56, 239, 223, 0.28);
+  border-color: var(--accent-cyan);
+}
+
+.btn-magic-reveal .arrow {
+  transition: transform 0.25s var(--ease-spring);
+}
+
+.btn-magic-reveal:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* CENTER: Circular / Squircle Optical Telescope Portal */
+.telescope-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.telescope-portal {
+  position: relative;
+  width: min(500px, 56vh);
+  height: min(500px, 56vh);
+  border-radius: 28px;
+  background: #020306;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  overflow: hidden;
+  transition: transform 0.55s var(--ease-spring), filter 0.45s var(--ease-spring);
+}
+
+.telescope-portal.slewing {
+  transform: scale(0.96);
+  filter: blur(4px) brightness(1.2);
+}
+
+#skyCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+}
+
+/* Ultra-clean floating badge inside portal top-left */
+.portal-pill-tl {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 8, 14, 0.72);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portal-pill-tr {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(6, 8, 14, 0.72);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Optical Magnifier Loupe (Appears smoothly on hover) */
+.portal-loupe {
+  position: absolute;
+  bottom: 42px;
+  right: 14px;
+  width: 98px;
+  height: 98px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 239, 223, 0.6);
+  background: #030408;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.25s var(--ease-spring), transform 0.25s var(--ease-spring);
+}
+
+.portal-loupe.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#loupeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Subtle bottom coordinate whisper inside portal */
+.portal-whisper {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(6, 8, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Floating Dipole / Raw FITS Legend Pill inside portal */
+.portal-mode-legend {
+  position: absolute;
+  bottom: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 13px;
+  border-radius: 999px;
+  background: rgba(6, 8, 14, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.22s var(--ease-spring), transform 0.22s var(--ease-spring);
+}
+
+.portal-mode-legend.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(6px);
+}
+
+/* RIGHT: Floating Glass Card (Single-Focus Progressive Disclosure) */
+.floating-inspector-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 20px 22px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeSlideUp 0.75s var(--ease-spring);
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inspector-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+}
+
+.insp-tab {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s var(--ease-spring);
+}
+
+.insp-tab.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.insp-target-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.insp-target-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.insp-target-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(56, 239, 223, 0.12);
+  color: var(--accent-cyan);
+}
+
+.insp-target-badge.blindspot {
+  background: rgba(255, 94, 77, 0.16);
+  color: #ff8577;
+  border: 1px solid rgba(255, 94, 77, 0.35);
+}
+
+.spectrum-stage-box {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  background: rgba(4, 6, 11, 0.65);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.spectrum-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Playback & Wavelength Filter Dock */
+
+.bottom-dock-wrap {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vision-dock {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  background: var(--glass-bg-heavy);
+  border: 1px solid var(--glass-border-highlight);
+  border-radius: 999px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  flex-wrap: wrap;
+}
+
+/* Play / Pause Circular Button */
+.dock-play-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--text-primary);
+  color: #05060a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s var(--ease-spring), box-shadow 0.22s var(--ease-spring);
+}
+
+.dock-play-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
+}
+
+/* Epoch Dots */
+.dock-epochs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.epoch-pill {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-spring);
+}
+
+.epoch-pill:hover {
+  color: var(--text-primary);
+}
+
+.epoch-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.dock-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--glass-border);
+}
+
+/* Viewing Modes in Dock */
+.dock-modes {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dock-mode-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s var(--ease-spring);
+}
+
+.dock-mode-btn:hover {
+  color: var(--text-primary);
+}
+
+.dock-mode-btn.active {
+  background: rgba(56, 239, 223, 0.16);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* 6-Detector Wavelength Pills (D1..D6) */
+.dock-bands {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dock-band-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.22s var(--ease-spring);
+}
+
+.dock-band-btn .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--b-color, #38bdf8);
+}
+
+.dock-band-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dock-band-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--b-color, var(--accent-gold));
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Layers Popover & Modals */
+
+.layers-popover {
+  position: absolute;
+  bottom: 72px;
+  right: 36px;
+  width: 310px;
+  background: var(--glass-bg-heavy);
+  border: 1px solid var(--glass-border-highlight);
+  border-radius: 20px;
+  padding: 18px;
+  backdrop-filter: blur(28px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+  z-index: 50;
+  transition: opacity 0.25s var(--ease-spring), transform 0.25s var(--ease-spring);
+}
+
+.layers-popover.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.97);
+}
+
+.popover-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.switch-pill {
+  appearance: none;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.switch-pill::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.22s var(--ease-spring);
+}
+
+.switch-pill.on {
+  background: var(--accent-cyan);
+}
+
+.switch-pill.on::after {
+  transform: translateX(16px);
+  background: #040508;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 4, 8, 0.78);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.28s var(--ease-spring);
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-window {
+  background: rgba(14, 17, 26, 0.95);
+  border: 1px solid var(--glass-border-highlight);
+  border-radius: 24px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
+}

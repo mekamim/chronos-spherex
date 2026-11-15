@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPHEREx // CHRONOS — Spatial Infrared Observatory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  <div class="cosmos-stage">
+    <!-- Dynamic Ambient Wavelength Aura -->
+    <div id="ambientAura" class="ambient-aura"></div>
+
+    <!-- Top Navigation & Coordinate Scanner -->
+    <header class="top-nav-wrap">
+      <!-- Brand Pill -->
+      <div class="brand-pill">
+        <span class="live-pulse"></span>
+        <span class="brand-name">SPHEREx</span>
+        <span id="irsaLiveStatusBadge" class="brand-tag">364 IRSA Frames</span>
+      </div>
+
+      <!-- Center Universal Sky Coordinate & FOV Scanner -->
+      <form id="skySearchForm" class="universal-coord-bar">
+        <div class="coord-field-group">
+          <span class="coord-field-label">RA / Target</span>
+          <input
+            id="raInput"
+            type="text"
+            class="coord-field-input wide"
+            value="269.452075"
+            placeholder="deg, HMS, or Name"
+            aria-label="Right Ascension or Object Name"
+          />
+        </div>
+
+        <div class="bar-sep"></div>
+
+        <div class="coord-field-group">
+          <span class="coord-field-label">Dec</span>
+          <input
+            id="decInput"
+            type="text"
+            class="coord-field-input"
+            value="+4.693389"
+            placeholder="deg or DMS"
+            aria-label="Declination"
+          />
+        </div>
+
+        <div class="bar-sep"></div>
+
+        <div class="coord-field-group">
+          <span class="coord-field-label">FOV</span>
+          <select id="fovSelect" class="fov-pill-select" title="Field of View (arcminutes)">
+            <option value="2.5">2.5'</option>
+            <option value="4.5" selected>4.5'</option>
+            <option value="7.5">7.5'</option>
+            <option value="12.0">12.0'</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-scan-sky">Scan Sky</button>
+
+        <button
+          type="button"
+          id="randomSectorBtn"
+          class="glass-btn"
+          style="padding:6px 11px;font-size:11.5px;"
+          title="Scan an unexplored Ecliptic / Deep Sky sector to hunt for moving anomalies"
+        >
+          Random Sector
+        </button>
+
+        <button
+          type="button"
+          id="togglePresetsBtn"
+          class="btn-presets-trigger"
+          title="Load NASA Space Apps Verification Demo Coordinates"
+        >
+          <span>NASA Demo Targets</span>
+          <span style="font-size:10px;">▾</span>
+        </button>
+
+        <!-- Floating NASA Demo Targets Dropdown -->
+        <div id="presetsDropdown" class="presets-dropdown hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0 4px;">
+            <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.08em;color:var(--accent-gold);text-transform:uppercase;">
+              Official NASA Challenge Verification Coordinates
+            </span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);">J2000 ICRS</span>
+          </div>
+          <div id="presetsListContainer" style="display:flex;flex-direction:column;gap:4px;">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+      </form>
+
+      <!-- Right Minimal Actions -->
+      <div class="nav-actions">
+        <button type="button" id="shareUrlBtn" class="glass-btn" title="Share Permalink or Embed">
+          Share
+        </button>
+
+        <button type="button" id="exportFitsBtn" class="glass-btn" title="Download Scientific Multi-Extension FITS">
+          FITS
+        </button>
+
+        <button type="button" id="judgeBriefBtn" class="glass-btn highlight">
+          Judge Brief
+        </button>
+      </div>
+    </header>
+
+    <!-- Observatory Viewport & Inspector Layout -->
+    <main class="center-experience">
+
+      <!-- LEFT: Minimalist Editorial Story Column -->
+      <section id="editorialColumn" class="editorial-column">
+        <div id="storyBadge" class="eyebrow-tag">TARGET 01 / 05 · HIGH PROPER MOTION</div>
+        <h1 id="storyTitle" class="editorial-title">Barnard's Star</h1>
+        <p id="storyDescription" class="editorial-subtitle">
+          Loading scientific narrative...
+        </p>
+
+        <!-- Clean 3-Stat Telemetry Strip -->
+        <div class="minimal-stats">
+          <div class="stat-item">
+            <span class="stat-label">Motion (μ)</span>
+            <span id="diagProperMotion" class="stat-value">10.39"/yr</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Temp</span>
+            <span id="diagTemp" class="stat-value">3134 K</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">IR Ratio D6/D1</span>
+            <span id="diagIrRatio" class="stat-value" style="color:var(--accent-cyan);">0.21</span>
+          </div>
+        </div>
+
+        <!-- Single Glowing Magic Discovery CTA -->
+        <button type="button" id="revealSignatureBtn" class="btn-magic-reveal">
+          <span id="revealBtnLabel">Reveal Discovery Signature</span>
+          <span class="arrow">→</span>
+        </button>
+      </section>
+
+      <!-- CENTER: Circular/Squircle Telescope Portal -->
+      <section class="telescope-stage">
+        <div id="telescopePortal" class="telescope-portal">
+          <canvas id="skyCanvas" width="540" height="540"></canvas>
+
+          <!-- Top-Left Minimal Pill -->
+          <div class="portal-pill-tl">
+            <span id="hudEpochTitle" style="font-weight:600;">Epoch 1 · 2025-05</span>
+            <span style="color:var(--text-tertiary);">|</span>
+            <span id="hudBandLabel" style="color:var(--accent-gold);">D1 (0.75–1.11 μm)</span>
+          </div>
+
+          <!-- Top-Right Orientation Pill -->
+          <div class="portal-pill-tr">
+            <span>N ↑ E ←</span>
+            <span style="margin:0 5px;color:var(--text-tertiary);">·</span>
+            <span id="hudFovLabel">4.5'</span>
+          </div>
+
+          <!-- Smooth Auto-Appearing 3.5x Optical Loupe -->
+          <div id="portalLoupe" class="portal-loupe">
+            <canvas id="loupeCanvas" width="98" height="98"></canvas>
+          </div>
+
+          <!-- Dynamic Mode Legend Pill (Dipole Δ / Raw FITS Telemetry) -->
+          <div id="dipoleLegendPill" class="portal-mode-legend hidden"></div>
+
+          <!-- Bottom Coordinate Whisper -->
+          <div id="cursorCoordReadout" class="portal-whisper">
+            RA 269.4521° · Dec +4.6934° · Click any star to extract 102-band spectrum
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Single Floating Glass Card (Progressive Disclosure) -->
+      <aside class="floating-inspector-card">
+        <div class="card-header-row">
+          <div class="inspector-tabs">
+            <button type="button" data-card="CARD_SPECTRUM" class="insp-tab active">
+              102-Ch Spectrum
+            </button>
+            <button type="button" data-card="CARD_LIGHTCURVE" class="insp-tab">
+              Time Curve
+            </button>
+            <button type="button" data-card="CARD_ARCHIVE" class="insp-tab">
+              IRSA Archive
+            </button>
+          </div>
+
+          <button type="button" id="downloadSpectrumCsvBtn" class="glass-btn" style="padding:4px 10px;font-size:11px;">
+            CSV ⬇
+          </button>
+        </div>
+
+        <!-- Selected Aperture Source Header -->
+        <div class="insp-target-head">
+          <div id="specSourceName" class="insp-target-name">Barnard's Star</div>
+          <span id="opticalStatusBadge" class="insp-target-badge">Gaia DR3 Verified</span>
+        </div>
+
+        <!-- View 1: Animated 102-Channel Near-IR Spectrum -->
+        <div id="CARD_SPECTRUM">
+          <div class="spectrum-stage-box">
+            <canvas id="spectrumCanvas" width="360" height="210" style="width:100%;height:100%;display:block;"></canvas>
+          </div>
+          <div id="spectrumHoverReadout" class="spectrum-footer" style="margin-top:8px;">
+            <span>0.75 – 5.00 μm LVF Spectrophotometer</span>
+            <span style="color:var(--accent-gold);">H₂O · CH₄ · CO · CO₂</span>
+          </div>
+        </div>
+
+        <!-- View 2: Multi-Epoch Light Curve & Motion Track (Hidden until clicked) -->
+        <div id="CARD_LIGHTCURVE" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">
+              Multi-Epoch Evolution (2025–2026)
+            </span>
+            <div style="display:flex;gap:4px;">
+              <button type="button" id="lcModeFluxBtn" class="insp-tab active" style="font-size:10.5px;padding:3px 9px;">
+                Flux (mJy)
+              </button>
+              <button type="button" id="lcModeMotionBtn" class="insp-tab" style="font-size:10.5px;padding:3px 9px;">
+                Shift (")
+              </button>
+            </div>
+          </div>
+          <div class="spectrum-stage-box">
+            <canvas id="lightCurveCanvas" width="360" height="210" style="width:100%;height:100%;display:block;"></canvas>
+          </div>
+        </div>
+
+        <!-- View 3: Live NASA IRSA Exposures & Cross-Mission Links (Hidden until clicked) -->
+        <div id="CARD_ARCHIVE" style="display:none;max-height:238px;overflow-y:auto;">
+          <div id="detectionsListContainer" style="margin-bottom:10px;"></div>
+          <div id="externalArchiveLinks" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;"></div>
+          <div id="irsaExposuresContainer"></div>
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- Bottom Playback & Detector Dock -->
+    <footer class="bottom-dock-wrap">
+      <div class="vision-dock">
+        <!-- Play / Pause Circle -->
+        <button type="button" id="playPauseBtn" class="dock-play-btn" title="Play / Pause Time-Lapse">
+          <span id="playPauseIcon">❚❚</span>
+        </button>
+
+        <!-- Epoch Pills -->
+        <div id="epochTimelineButtons" class="dock-epochs">
+          <!-- Populated by app.js -->
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- 6 Clean Viewing Modes -->
+        <div class="dock-modes" id="viewModeTabs">
+          <button type="button" data-mode="SINGLE_BAND" class="dock-mode-btn active">
+            Time-Lapse
+          </button>
+          <button type="button" data-mode="SPLIT_CURTAIN" class="dock-mode-btn" title="Drag vertical curtain to compare Epoch 1 vs. Epoch N">
+            Split Curtain
+          </button>
+          <button type="button" data-mode="DIFFERENCE" class="dock-mode-btn" title="Subtract Epoch 1 from Epoch N to isolate moving dipoles">
+            Dipole Δ
+          </button>
+          <button type="button" data-mode="TEMPORAL_COADD" class="dock-mode-btn" title="Co-add all epochs across time to boost faint SNR">
+            Co-Add Σ
+          </button>
+          <button type="button" data-mode="RGB_COMPOSITE" class="dock-mode-btn" title="False-color thermal composite (D6/D4/D1)">
+            Thermal RGB
+          </button>
+          <button type="button" data-mode="RAW_FITS" class="dock-mode-btn" title="Inspect native 6.15&quot;/px NASA IRSA Level-2 FITS detector cutout">
+            Raw FITS
+          </button>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- 6 Detector Wavelength Pills (D1..D6) -->
+        <div id="detectorBandStrip" class="dock-bands">
+          <!-- Populated by app.js -->
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- Layers & Calibrations Popover Trigger -->
+        <button type="button" id="toggleLayersPopoverBtn" class="glass-btn" style="padding:6px 13px;font-size:11.5px;">
+          Layers &amp; Optics
+        </button>
+      </div>
+    </footer>
+
+    <!-- Optical Layers Popover -->
+    <div id="layersPopover" class="layers-popover hidden">
+      <div style="font-weight:600;font-size:13px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+        <span>Optical Layers &amp; Calibration</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent-cyan);">SPHEREx L2</span>
+      </div>
+
+      <div class="popover-row">
+        <span>Zodiacal Light Subtraction (ZODI)</span>
+        <button type="button" id="swZodi" class="switch-pill on"></button>
+      </div>
+      <div class="popover-row">
+        <span>ESA Gaia DR3 + Motion Vectors</span>
+        <button type="button" id="swGaia" class="switch-pill on"></button>
+      </div>
+      <div class="popover-row">
+        <span>Dipole &amp; Variable Reticles</span>
+        <button type="button" id="swAnomalies" class="switch-pill on"></button>
+      </div>
+      <div class="popover-row">
+        <span>Contamination FLAGS Bitmask</span>
+        <button type="button" id="swFlags" class="switch-pill"></button>
+      </div>
+      <div class="popover-row">
+        <span>J2000 WCS Coordinate Grid</span>
+        <button type="button" id="swGrid" class="switch-pill on"></button>
+      </div>
+      <div class="popover-row">
+        <span>Molecular Absorption Lines</span>
+        <button type="button" id="swLines" class="switch-pill on"></button>
+      </div>
+
+      <div style="border-top:1px solid var(--glass-border);margin-top:8px;padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label style="font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);display:block;margin-bottom:4px;">COLORMAP</label>
+          <select id="colormapSelect" style="width:100%;background:rgba(0,0,0,0.4);color:var(--text-primary);border:1px solid var(--glass-border);border-radius:8px;padding:5px 8px;font-size:11.5px;">
+            <option value="inferno" selected>Inferno</option>
+            <option value="viridis">Viridis</option>
+            <option value="magma">Magma</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="inverted">WiseView Inverted</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);display:block;margin-bottom:4px;">MOTION SCALE</label>
+          <select id="motionScaleSelect" style="width:100%;background:rgba(0,0,0,0.4);color:var(--text-primary);border:1px solid var(--glass-border);border-radius:8px;padding:5px 8px;font-size:11.5px;">
+            <option value="1.0" selected>1× Physical (True)</option>
+            <option value="3.0">3× Enhanced</option>
+            <option value="6.0">6× Deep Blink</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Share / Embed Modal -->
+  <div id="shareModal" class="modal-overlay hidden">
+    <div class="modal-window" style="max-width:520px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="font-size:16px;font-weight:600;">Share Discovery or Embed Observatory</h3>
+        <button type="button" id="closeShareModalBtn" class="glass-btn" style="padding:4px 10px;">Close</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <label style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);display:block;margin-bottom:6px;">
+            DIRECT PERMALINK
+          </label>
+          <div style="display:flex;gap:8px;">
+            <input id="shareDirectUrlInput" type="text" readonly style="flex:1;background:rgba(0,0,0,0.45);border:1px solid var(--glass-border);border-radius:10px;padding:10px 12px;color:var(--accent-cyan);font-family:var(--font-mono);font-size:11.5px;" />
+            <button type="button" id="copyDirectUrlBtn" class="glass-btn highlight">Copy</button>
+          </div>
+        </div>
+        <div>
+          <label style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);display:block;margin-bottom:6px;">
+            EMBEDDABLE IFRAME
+          </label>
+          <textarea id="shareIframeInput" rows="3" readonly style="width:100%;background:rgba(0,0,0,0.45);border:1px solid var(--glass-border);border-radius:10px;padding:10px 12px;color:var(--text-secondary);font-family:var(--font-mono);font-size:11px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scientific Verification Modal -->
+  <div id="judgeModal" class="modal-overlay hidden">
+    <div class="modal-window">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+        <div>
+          <div class="eyebrow-tag">NASA SPACE APPS CHALLENGE 2026 · PLANET X AND SPHEREx</div>
+          <h3 style="font-family:var(--font-serif);font-size:32px;font-weight:400;margin-top:4px;">
+            Executive Judging &amp; Scientific Verification Brief
+          </h3>
+        </div>
+        <button type="button" id="closeJudgeModalBtn" class="glass-btn" style="padding:5px 12px;">Close</button>
+      </div>
+
+      <p style="color:var(--text-secondary);font-size:13.5px;line-height:1.6;margin-bottom:18px;">
+        <strong>SPHEREx // CHRONOS</strong> is an interactive time-domain infrared discovery platform built on live
+        <strong>NASA/IPAC IRSA SIAv2</strong> open data (<code style="color:var(--accent-cyan);">spherex_dr1</code> &amp; <code style="color:var(--accent-cyan);">spherex_qr3</code>).
+        It combines multi-epoch astrometric blinking, split-curtain comparison, dipole difference imaging, and on-the-fly 102-channel spectroscopy (0.75–5.00 μm).
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="padding:14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);">
+          <div style="color:var(--accent-gold);font-weight:600;font-size:13px;margin-bottom:4px;">1. Validity &amp; Astrometric Epoch Propagation</div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Propagates J2000/2010 reference coordinates to the 2025–2026 SPHEREx observation epoch via 3D space motion (e.g. Barnard's Star +266.5" N, WISE 0855 −121.5" W), reprojects raw FITS cutouts onto North-Up WCS grids, and anchors 102-band spectra to real 2MASS + WISE mJy fluxes.
+          </p>
+        </div>
+        <div style="padding:14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);">
+          <div style="color:var(--accent-cyan);font-weight:600;font-size:13px;margin-bottom:4px;">2. Live Space Agency Data (IRSA SIAv2 + Gator + IBE)</div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Queries live NASA/IPAC IRSA SIAv2 exposures, live IRSA Gator catalogs (<code style="color:var(--accent-cyan);">gaia_dr3_source</code> &amp; <code style="color:var(--accent-cyan);">allwise_p3as_psd</code>), 7-HDU Level-2 FITS cutouts, 32-bit HDU 2 FLAGS bitmasks, and CSA NEOSSat (CADC) cross-links.
+          </p>
+        </div>
+        <div style="grid-column:1 / -1;padding:12px 14px;border-radius:14px;background:rgba(56,239,223,0.04);border:1px solid rgba(56,239,223,0.22);">
+          <div style="color:var(--text-primary);font-weight:600;font-size:12px;margin-bottom:3px;">3. Data Provenance &amp; Forward-Modeling Methodology</div>
+          <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.45;">
+            All sky coordinates, observation timestamps (<code style="color:var(--accent-cyan);">MJD</code>), spacecraft WCS footprints, and native detector cutouts (<code style="color:var(--accent-cyan);">RAW_FITS</code>) are fetched from official <strong>NASA/IPAC IRSA</strong> (SIAv2, IBE, and Gator <code style="color:var(--accent-cyan);">gaia_dr3_source</code> + <code style="color:var(--accent-cyan);">allwise_p3as_psd</code>) archives. Because individual SPHEREx Level-2 frames sample a single LVF strip per pass, <code style="color:var(--accent-cyan);">MODEL_CUBE</code> reconstructs continuous 6-band + 102-channel spectrophotometry anchored to cataloged 2MASS/WISE flux densities (<code style="color:var(--accent-cyan);">mJy</code>); switch to <code style="color:var(--accent-cyan);">RAW_FITS</code> anytime to inspect un-modeled North-Up WCS NASA detector cutouts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
